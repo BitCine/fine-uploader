@@ -2,7 +2,8 @@
 
 version=$(shell node -pe "require('./package.json').version")
 dist-out-dir = _dist
-pub-dir = $(dist-out-dir)/$(version)
+# pub-dir = $(dist-out-dir)/$(version)
+pub-dir = lib
 
 
 # properly get npm-bin in cygwin (Eg. CYGWIN_NT-10.0)
@@ -372,6 +373,12 @@ setup-dist:
 	cp -pR $(src-dir)/commonJs/ $(pub-dir)/lib/
 	cp -pR $(src-dir)/typescript $(pub-dir)/
 
+setup-lib:
+	mkdir -p $(pub-dir)
+	cp LICENSE README.md package.json $(pub-dir)
+	cp -pR $(src-dir)/commonJs/ $(pub-dir)/lib/
+	cp -pR $(src-dir)/typescript $(pub-dir)/	
+
 copy-build-to-dist:
 	mkdir -p $(pub-dir)/$(PUB-SUBDIR)
 	cp -pR $(build-out-dir)/placeholders $(build-out-dir)/templates $(pub-dir)/$(PUB-SUBDIR)
@@ -473,9 +480,9 @@ publish: \
 	copy-s3-jquery-dist \
 	copy-azure-dist \
 	copy-azure-jquery-dist \
-	copy-all-dist \
-	tag-release \
-	push-to-npm
+	copy-all-dist 
+	# tag-release \
+	# push-to-npm
 
 setup-dev:
 	(cd test/dev/handlers; curl -sS https://getcomposer.org/installer | php; php composer.phar install)
